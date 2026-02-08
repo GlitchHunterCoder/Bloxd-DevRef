@@ -177,15 +177,7 @@ This allows the webpage to be viewed as if its a website
 To utilise this, put the code below in a web console of your choosing
 
 ```js
-fetch(`
-https://
-raw.githubusercontent.com
-/GlitchHunterCoder
-/Bloxd-DevRef
-/refs
-/heads
-/main
-/nav.js`)
+fetch(`https://raw.githubusercontent.com/GlitchHunterCoder/Bloxd-DevRef/refs/heads/main/nav.js`)
 .then((e => e.text()))
 .then((t => {eval(t)}))
 ```
