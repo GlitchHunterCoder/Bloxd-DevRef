@@ -168,3 +168,24 @@ This documentation is a living project.
 Pages may evolve as new behavior is discovered, tested, or falsified.
 
 Unknowns are not failures — they are tracked problems waiting to be solved.
+
+## Navigator
+
+This documentation has a nav.js, which is a simulated webpage.
+This allows the webpage to be viewed as if its a website
+
+To utilise this, put the code below in a web console of your choosing
+
+```js
+fetch(`
+https://
+raw.githubusercontent.com
+/GlitchHunterCoder
+/Bloxd-DevRef
+/refs
+/heads
+/main
+/nav.js`)
+.then((e => e.text()))
+.then((t => {eval(t)}))
+```
