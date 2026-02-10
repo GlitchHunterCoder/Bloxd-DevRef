@@ -1,3 +1,4 @@
+```js
 {
   "Object": {
     "length": "[number:1]",
@@ -2171,3 +2172,4 @@
   },
   "Symbol(Symbol.toStringTag)": "[undefined]"
 }
+```
