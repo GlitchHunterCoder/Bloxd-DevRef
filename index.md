@@ -28,8 +28,8 @@ function helloWorld() {
 ## Links
 
 - [External Link to GitHub](https://github.com)
-- [Next Page](Execution-Scope/index.md) – relative link to test navigation
-- [Folder Link](guides/) – relative folder link to index.md
+- [Execution Scope](Execution-Scope/index.md) – relative link to test navigation
+- [Global Environment](Global-Environment/index.md) – relative folder link to index.md
 
 ---
 
