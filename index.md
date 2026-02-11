@@ -30,7 +30,7 @@ function helloWorld() {
 - [External Link to GitHub](https://github.com)
 - [Execution Scope](Execution-Scope/index.md) – relative link to test navigation
 - [Global Environment](Global-Environment/index.md) – relative folder link to index.md
-
+- [JS Support](JS-Support/index.md)
 ---
 
 ### Nested List
