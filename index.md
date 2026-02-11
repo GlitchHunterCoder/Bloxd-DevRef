@@ -31,6 +31,7 @@ function helloWorld() {
 - [JS Support](JS-Support/index.md) - what is supported in BloxdJS when compared to other engines and specifications
 - [Knowledge Status](Knowledge-Status/index.md) - how certain we are about the information, and relevant sources
 - [Runtime Semantics](Runtime-Semantics/index.md) - the strange quirks of the bloxd runtime
+- [Sandbox Limitations](Sandbox-Limitations/index.md) - what limits are imposed on the environment
 ---
 
 ### Nested List
