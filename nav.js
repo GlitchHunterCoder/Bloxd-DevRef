@@ -95,11 +95,38 @@
         font-style: italic;
         background: ${darkMode ? "#1a1a1a" : "#f9f9f9"};
       }
+
+      /* Sidebar file tree */
+      #doc-nav {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 220px;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 10px;
+        border-right: 1px solid #333;
+        background: #0f1115;
+        color: #ccc;
+        font-family: sans-serif;
+      }
+      #doc-nav .folder, #doc-nav .file {
+        cursor: pointer;
+        padding: 2px 5px;
+      }
+      #doc-nav .folder {
+        font-weight: bold;
+      }
+      #doc-nav .children {
+        margin-left: 15px;
+        display: none;
+      }
     `;
     document.head.appendChild(style);
 
     document.body.innerHTML = "";
     document.body.appendChild(container);
+    container.style.marginLeft = "240px"; // space for sidebar
   }
 
   // =========================
@@ -113,7 +140,17 @@
   }
 
   // =========================
-  // PUBLIC API
+  // FETCH FILE TREE
+  // =========================
+  async function fetchFileTree(path = "") {
+    const apiURL = `https://api.github.com/repos/${USER}/${REPO}/contents/${path}?ref=${BRANCH}`;
+    const res = await fetch(apiURL);
+    if (!res.ok) return [];
+    return res.json();
+  }
+
+  // =========================
+  // OPEN DOCUMENT
   // =========================
   async function openDoc(path) {
     const resolved = resolvePath(path);
@@ -125,7 +162,7 @@
       container.innerHTML = markdownToHTML(md);
       highlightCodeBlocks(container);
       rewriteLinks(container, resolved);
-      buildSidebar(container);
+      buildSidebarTree();
     } catch (err) {
       renderError(err.message);
     }
@@ -139,9 +176,6 @@
     }
   }
 
-  // =========================
-  // PATH RESOLUTION
-  // =========================
   function resolvePath(path) {
     path = path.trim();
     if (path.endsWith("/")) return path + "index.md";
@@ -181,7 +215,7 @@
       anchor.replaceWith(button);
     });
   }
-  
+
   function highlightCodeBlocks(root) {
     root.querySelectorAll("pre").forEach(pre => {
       const code = pre.querySelector("code");
@@ -192,10 +226,8 @@
 
       let lastIndex = 0;
       let match;
-
       while ((match = regex.exec(raw)) !== null) {
         if (match.index > lastIndex) code.appendChild(document.createTextNode(raw.slice(lastIndex, match.index)));
-
         let span = document.createElement("span");
         if (match[1]) span.className = "cmt";
         else if (match[2]) span.className = "str";
@@ -206,13 +238,10 @@
         else if (match[8]) span.className = "pun";
         span.textContent = match[0];
         code.appendChild(span);
-
         lastIndex = match.index + match[0].length;
       }
-
       if (lastIndex < raw.length) code.appendChild(document.createTextNode(raw.slice(lastIndex)));
 
-      // Copy button
       let copyBtn = document.createElement("button");
       copyBtn.textContent = "Copy";
       copyBtn.style.position = "absolute";
@@ -232,7 +261,6 @@
           setTimeout(() => copyBtn.textContent = "Copy", 1000);
         });
       };
-
       pre.style.position = "relative";
       pre.appendChild(copyBtn);
     });
@@ -241,7 +269,6 @@
   function markdownToHTML(md) {
     const codeBlocks = [];
 
-    // Fenced code blocks
     md = md.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
       const id = codeBlocks.length;
       codeBlocks.push({ lang, code });
@@ -250,21 +277,17 @@
 
     md = md.replace(/\r\n/g, "\n");
 
-    // Headings
     md = md.replace(/^### (.*)$/gm, "<h3>$1</h3>")
            .replace(/^## (.*)$/gm, "<h2>$1</h2>")
            .replace(/^# (.*)$/gm, "<h1>$1</h1>");
 
-    // Inline formatting
     md = md.replace(/`([^`]+)`/g, `<code class="inline">$1</code>`)
            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
            .replace(/\*(.*?)\*/g, "<em>$1</em>")
            .replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2">$1</a>`);
 
-    // Blockquotes
     md = md.replace(/^\s*> (.*)$/gm, `<blockquote>$1</blockquote>`);
 
-    // Tables
     md = md.replace(/^\|(.+)\|\n\|([ -:|]+)\|\n((?:\|.*\|\n?)*)/gm, (_, headers, sep, rows) => {
       const ths = headers.split("|").map(h => `<th>${h.trim()}</th>`).join("");
       const trs = rows.trim().split("\n").map(r => {
@@ -274,7 +297,7 @@
       return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
     });
 
-    // Nested lists (recursive)
+    // Nested lists
     function parseList(lines, start = 0, indent = 0) {
       let html = "";
       let i = start;
@@ -314,7 +337,6 @@
     }
     md = finalLines.join("\n");
 
-    // Paragraphs
     md = md.split(/\n{2,}/)
            .map(block => {
              if (/^\s*<(h\d|ul|ol|li|pre|blockquote|table)/i.test(block)) return block;
@@ -322,7 +344,6 @@
            })
            .join("\n");
 
-    // Restore code blocks
     md = md.replace(/@@CODEBLOCK_(\d+)@@/g, (_, i) => {
       const { lang, code } = codeBlocks[i];
       return `<pre data-lang="${lang || ""}"><code>${escapeHTML(code)}</code></pre>`;
@@ -335,40 +356,52 @@
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  function buildSidebar(root) {
-    let sidebar = document.getElementById("doc-nav");
-    if (!sidebar) {
-      sidebar = document.createElement("nav");
-      sidebar.id = "doc-nav";
-      sidebar.style.position = "fixed";
-      sidebar.style.left = "0";
-      sidebar.style.top = "0";
-      sidebar.style.width = "220px";
-      sidebar.style.height = "100vh";
-      sidebar.style.overflowY = "auto";
-      sidebar.style.padding = "10px";
-      sidebar.style.borderRight = "1px solid #333";
-      sidebar.style.background = "#0f1115";
-      sidebar.style.color = "#ccc";
+  // =========================
+  // FILE TREE SIDEBAR
+  // =========================
+  async function buildSidebarTree(path = "") {
+    const sidebar = document.getElementById("doc-nav") || document.createElement("div");
+    sidebar.id = "doc-nav";
+    document.body.appendChild(sidebar);
 
-      document.body.appendChild(sidebar);
-      root.style.marginLeft = "240px";
+    sidebar.innerHTML = "<strong>Files</strong><hr>";
+
+    const items = await fetchFileTree(path);
+
+    function createNode(item) {
+      const node = document.createElement("div");
+      if (item.type === "dir") {
+        node.className = "folder";
+        node.textContent = item.name;
+        const childrenContainer = document.createElement("div");
+        childrenContainer.className = "children";
+        node.onclick = () => {
+          childrenContainer.style.display = childrenContainer.style.display === "none" ? "block" : "none";
+        };
+        node.appendChild(childrenContainer);
+        // lazy load subfolders
+        node._path = item.path;
+        node._childrenContainer = childrenContainer;
+        node.addEventListener("click", async e => {
+          e.stopPropagation();
+          if (!childrenContainer.hasChildNodes()) {
+            const subitems = await fetchFileTree(item.path);
+            subitems.forEach(sub => childrenContainer.appendChild(createNode(sub)));
+          }
+          childrenContainer.style.display = childrenContainer.style.display === "none" ? "block" : "none";
+        });
+      } else if (item.type === "file" && item.name.endsWith(".md")) {
+        node.className = "file";
+        node.textContent = item.name;
+        node.onclick = e => {
+          e.stopPropagation();
+          openDoc(item.path);
+        };
+      }
+      return node;
     }
 
-    sidebar.innerHTML = "<strong>Contents</strong><hr>";
-
-    root.querySelectorAll("h1, h2, h3").forEach((h, i) => {
-      const id = "sec_" + i;
-      h.id = id;
-
-      const link = document.createElement("div");
-      link.textContent = h.textContent;
-      link.style.cursor = "pointer";
-      link.style.marginLeft = h.tagName === "H2" ? "10px" : h.tagName === "H3" ? "20px" : "0";
-      link.onclick = () => document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-
-      sidebar.appendChild(link);
-    });
+    items.forEach(item => sidebar.appendChild(createNode(item)));
   }
 
   // =========================
@@ -380,4 +413,4 @@
   console.log("Opening index.md ...");
   openDoc("index");
 })();
-  
+      
