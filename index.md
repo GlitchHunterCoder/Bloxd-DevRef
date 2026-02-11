@@ -26,11 +26,10 @@ function helloWorld() {
 ---
 
 ## Links
-
-- [External Link to GitHub](https://github.com)
-- [Execution Scope](Execution-Scope/index.md) – relative link to test navigation
-- [Global Environment](Global-Environment/index.md) – relative folder link to index.md
-- [JS Support](JS-Support/index.md)
+- [Execution Scope](Execution-Scope/index.md) – where, and how the code can be executed
+- [Global Environment](Global-Environment/index.md) – what exists in the global environment in detail
+- [JS Support](JS-Support/index.md) - what is supported in BloxdJS when compared to other engines and specifications
+- [Knowledge Status](Knowledge-Status/index.md) - how certain we are about the information, and relevant sources
 ---
 
 ### Nested List
