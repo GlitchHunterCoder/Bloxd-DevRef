@@ -181,3 +181,6 @@ fetch(`https://raw.githubusercontent.com/GlitchHunterCoder/Bloxd-DevRef/refs/hea
 .then((e => e.text()))
 .then((t => {eval(t)}))
 ```
+
+[`DevRef`](Visit site
+https://glitchhuntercoder.github.io/Bloxd-DevRef/index.html)
