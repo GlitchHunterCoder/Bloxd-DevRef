@@ -140,7 +140,7 @@
   // =========================
   async function fetchFileTree(path = "") {
     const apiURL = `https://api.github.com/repos/${USER}/${REPO}/contents/${path}?ref=${BRANCH}`;
-    const res = await fetch(apiURL);
+    const res = {} //await fetch(apiURL); //change back when it uses tree.json instead of fetch api
     if (!res.ok) return [];
     return res.json();
   }
