@@ -1,4 +1,5 @@
-# [`Bloxd-DevRef: A Resource of all Bloxd Coding Environment Information`](https://glitchhuntercoder.github.io/Bloxd-DevRef/index.html)
+# [`Bloxd-DevRef:`](https://glitchhuntercoder.github.io/Bloxd-DevRef/index.html)
+# A Resource of all Bloxd Coding Environment Information
 
 A complete, honest, and structured documentation of the **Bloxd JavaScript execution environment**.
 
