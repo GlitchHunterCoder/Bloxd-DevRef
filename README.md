@@ -1,4 +1,4 @@
-# Bloxd-DevRef
+# [`DevRef`](https://glitchhuntercoder.github.io/Bloxd-DevRef/index.html)
 
 A complete, honest, and structured documentation of the **Bloxd JavaScript execution environment**.
 
@@ -181,5 +181,3 @@ fetch(`https://raw.githubusercontent.com/GlitchHunterCoder/Bloxd-DevRef/refs/hea
 .then((e => e.text()))
 .then((t => {eval(t)}))
 ```
-
-## [`DevRef`](https://glitchhuntercoder.github.io/Bloxd-DevRef/index.html)
