@@ -7,13 +7,11 @@
   const BRANCH = "main";
   const ROOT = `https://raw.githubusercontent.com/${USER}/${REPO}/refs/heads/${BRANCH}/`;
   const DOC_CONTAINER_ID = "doc";
-
   // =========================
   // STATE
   // =========================
   let currentPath = null;
   const historyStack = [];
-
   // =========================
   // ENSURE DOC CONTAINER
   // =========================
@@ -128,7 +126,6 @@
     document.body.appendChild(container);
     container.style.marginLeft = "240px"; // space for sidebar
   }
-
   // =========================
   // FETCH MARKDOWN
   // =========================
@@ -138,7 +135,6 @@
     if (!res.ok) throw new Error(`Document not found: ${path}`);
     return res.text();
   }
-
   // =========================
   // FETCH FILE TREE
   // =========================
@@ -148,7 +144,6 @@
     if (!res.ok) return [];
     return res.json();
   }
-
   // =========================
   // OPEN DOCUMENT
   // =========================
@@ -189,7 +184,6 @@
     let target = base ? `${base}/${to}` : to;
     return resolvePath(target);
   }
-
   // =========================
   // RENDERING
   // =========================
@@ -366,7 +360,6 @@
   function escapeHTML(str) {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
-
   // =========================
   // FILE TREE SIDEBAR
   // =========================
@@ -414,7 +407,6 @@
 
     items.forEach(item => sidebar.appendChild(createNode(item)));
   }
-
   // =========================
   // EXPOSE
   // =========================
