@@ -298,46 +298,59 @@
     });
 
     // Nested lists
-function parseLists(lines) {
-  let html = "";
-  let stack = [];
-  function closeLists(toLevel = 0) {
-    while (stack.length > toLevel) {
-      html += "</li></ul>";
-      stack.pop();
+    function parseList(lines, start = 0, indent = 0) {
+      let html = "";
+      let i = start;
+      let listType = null;
+      while (i < lines.length) {
+        const line = lines[i];
+        const match = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)/);
+        if (!match) break;
+        const [, space, bullet, text] = match;
+        const level = space.length;
+        if (!listType) listType = /\d+\./.test(bullet) ? "ol" : "ul";
+        if (level > indent) {
+          const inner = parseList(lines, i, level);
+          html += inner.html;
+          i = inner.next;
+          continue;
+        }
+        html += `<li>${text}</li>`;
+        i++;
+      }
+      return { html: `<${listType}>${html}</${listType}>`, next: i };
     }
-  }
-  lines.forEach((line, i) => {
-    const match = line.match(/^(\s*)([-*])\s+(.*)$/);
-    if (!match) {
-      closeLists(0);
-      html += line + "\n";
-      return;
-    }
-    const indentSpaces = match[1].replace(/\t/g, "  ").length;
-    const level = Math.floor(indentSpaces / 2);
-    const content = match[3];
-    if (level > stack.length) {
-      while (stack.length < level) {
-        html += "<ul>";
-        stack.push("ul");
+
+    const lines = md.split("\n");
+    const finalLines = [];
+    let idx = 0;
+    while (idx < lines.length) {
+      const line = lines[idx];
+      if (/^\s*([-*+]|\d+\.)\s+/.test(line)) {
+        const listBlock = parseList(lines, idx);
+        finalLines.push(listBlock.html);
+        idx = listBlock.next;
+      } else {
+        finalLines.push(line);
+        idx++;
       }
     }
-    if (level < stack.length) {
-      closeLists(level);
-    }
-    if (stack.length === 0) {
-      html += "<ul>";
-      stack.push("ul");
-    }
-    if (html.endsWith("</li>") === false && stack.length > 0) {
-      html += "</li>";
-    }
-    html += `<li>${content}`;
-  });
-  closeLists(0);
-  return html;
-}
+    md = finalLines.join("\n");
+
+    md = md.split(/\n{2,}/)
+           .map(block => {
+             if (/^\s*<(h\d|ul|ol|li|pre|blockquote|table)/i.test(block)) return block;
+             return `<p>${block.trim()}</p>`;
+           })
+           .join("\n");
+
+    md = md.replace(/@@CODEBLOCK_(\d+)@@/g, (_, i) => {
+      const { lang, code } = codeBlocks[i];
+      return `<pre data-lang="${lang || ""}"><code>${escapeHTML(code)}</code></pre>`;
+    });
+
+    return md;
+  }
 
   function escapeHTML(str) {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
