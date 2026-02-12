@@ -298,28 +298,42 @@
     });
 
     // Nested lists
-    function parseList(lines, start = 0, indent = 0) {
-      let html = "";
-      let i = start;
-      let listType = null;
-      while (i < lines.length) {
-        const line = lines[i];
-        const match = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)/);
-        if (!match) break;
-        const [, space, bullet, text] = match;
-        const level = space.length;
-        if (!listType) listType = /\d+\./.test(bullet) ? "ol" : "ul";
-        if (level > indent) {
-          const inner = parseList(lines, i, level);
-          html += inner.html;
-          i = inner.next;
-          continue;
-        }
-        html += `<li>${text}</li>`;
-        i++;
-      }
-      return { html: `<${listType}>${html}</${listType}>`, next: i };
+function parseList(lines, start = 0, indent = 0) {
+  let html = "";
+  let i = start;
+  let listType = null;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    const match = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)/);
+    if (!match) break;
+
+    const [, space, bullet, text] = match;
+    const level = Math.floor(space.replace(/\t/g, "  ").length / 2);
+    // 🔴 Stop when indentation decreases
+    if (level < indent) break;
+
+    const currentType = /\d+\./.test(bullet) ? "ol" : "ul";
+    if (!listType) listType = currentType;
+
+    // 🔴 If indentation increases → recurse for nested list
+    if (level > indent) {
+      const inner = parseList(lines, i, level);
+      html = html.replace(/<\/li>$/, "") + inner.html + "</li>";
+      i = inner.next;
+      continue;
     }
+
+    html += `<li>${text}</li>`;
+    i++;
+  }
+
+  return {
+    html: listType ? `<${listType}>${html}</${listType}>` : "",
+    next: i
+  };
+}
+    
 
     const lines = md.split("\n");
     const finalLines = [];
