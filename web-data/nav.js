@@ -127,11 +127,11 @@
     container.style.marginLeft = "240px"; // space for sidebar
   }
   // =========================
-  // FETCH MARKDOWN
+  //  MARKDOWN
   // =========================
-  async function fetchMarkdown(path) {
+  async function Markdown(path) {
     const url = ROOT + path;
-    const res = await fetch(url);
+    const res = await fetch(url + "?v=" + Date.now());
     if (!res.ok) throw new Error(`Document not found: ${path}`);
     return res.text();
   }
@@ -140,7 +140,7 @@
   // =========================
   async function fetchFileTree(path = "") {
     const apiURL = `https://api.github.com/repos/${USER}/${REPO}/contents/${path}?ref=${BRANCH}`;
-    const res = {} //await fetch(apiURL); //change back when it uses tree.json instead of fetch api
+    const res = {} //await fetch(apiURL + "?v=" + Date.now()); //change back when it uses tree.json instead of fetch api
     if (!res.ok) return [];
     return res.json();
   }
