@@ -129,7 +129,7 @@
   // =========================
   //  MARKDOWN
   // =========================
-  async function Markdown(path) {
+  async function fetchMarkdown(path) {
     const url = ROOT + path;
     const res = await fetch(url + "?v=" + Date.now());
     if (!res.ok) throw new Error(`Document not found: ${path}`);
