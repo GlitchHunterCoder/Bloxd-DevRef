@@ -16,9 +16,9 @@ Bloxd-DevRef is inspired by MDN, but differs in one key way:
 
 No part of the environment is intentionally omitted.
 
-* If something is known, it is documented.
-* If something is partially understood, it is marked as such.
-* If something is unknown, it is explicitly listed as unknown.
+- If something is known, it is documented.
+- If something is partially understood, it is marked as such.
+- If something is unknown, it is explicitly listed as unknown.
 
 There are no silent gaps.
 
@@ -26,9 +26,9 @@ There are no silent gaps.
 
 All pages follow strict templates depending on their type.
 
-* Identical structure
-* Predictable sections
-* No stylistic drift
+- Identical structure
+- Predictable sections
+- No stylistic drift
 
 This ensures long-term maintainability and prevents documentation decay.
 
@@ -38,8 +38,8 @@ Documentation structure mirrors **runtime containment**.
 
 If, in Bloxd:
 
-* `globalThis` contains `Object`
-* `World` contains `Entities`
+- `globalThis` contains `Object`
+- `World` contains `Entities`
 
 Then the documentation reflects the same hierarchy.
 
@@ -57,9 +57,9 @@ This section answers:
 
 Includes:
 
-* Syntax support matrix
-* Behavioral deviations from ECMAScript
-* Missing or disabled features
+- Syntax support matrix
+- Behavioral deviations from ECMAScript
+- Missing or disabled features
 
 ---
 
@@ -69,9 +69,9 @@ Documents **how code actually executes**.
 
 This section explains:
 
-* Tick and execution model
-* Callback defining and execution
-* Runtime model and steps
+- Tick and execution model
+- Callback defining and execution
+- Runtime model and steps
 
 This is about *behavior*, not APIs.
 
@@ -85,9 +85,9 @@ This section mirrors the runtime object graph, rooted at `globalThis`.
 
 Includes:
 
-* Standard globals
-* Bloxd-specific globals
-* Engine-provided APIs
+- Standard globals
+- Bloxd-specific globals
+- Engine-provided APIs
 
 Nothing is duplicated elsewhere.
 
@@ -99,16 +99,16 @@ Documents **where code runs and what rules apply**.
 
 Each scope defines:
 
-* Lifetime
-* Privileges
-* Interruption rules
-* Execution limits
+- Lifetime
+- Privileges
+- Interruption rules
+- Execution limits
 
 Includes:
 
-* Board Code
-* Code Block
-* World Code
+- Board Code
+- Code Block
+- World Code
 
 ---
 
@@ -122,10 +122,10 @@ This section answers:
 
 Includes:
 
-* Interruptions
-* Rate limits
-* Memory limits
-* Argument size limits
+- Interruptions
+- Rate limits
+- Memory limits
+- Argument size limits
 
 These are treated as first-class behavior, not edge cases.
 
@@ -137,10 +137,10 @@ Documents **how certain each claim is**.
 
 Every page declares its highest supported status:
 
-* **Law** – Observed invariant across all tested contexts
-* **Theory** – Explains behavior and makes correct predictions
-* **Conjecture** – Plausible but not fully verified
-* **Hypothesis** – Educated guess with little or no evidence
+- **Law** – Observed invariant across all tested contexts
+- **Theory** – Explains behavior and makes correct predictions
+- **Conjecture** – Plausible but not fully verified
+- **Hypothesis** – Educated guess with little or no evidence
 
 This prevents overclaiming and preserves honesty.
 
@@ -150,15 +150,15 @@ This prevents overclaiming and preserves honesty.
 
 Bloxd-DevRef documents:
 
-* The Bloxd JavaScript environment
-* Engine quirks and constraints
-* Observable runtime behavior
+- The Bloxd JavaScript environment
+- Engine quirks and constraints
+- Observable runtime behavior
 
 It does **not** attempt to:
 
-* Teach JavaScript basics
-* Replace the ECMAScript specification
-* Hide unknowns behind assumptions
+- Teach JavaScript basics
+- Replace the ECMAScript specification
+- Hide unknowns behind assumptions
 
 ---
 
@@ -168,16 +168,3 @@ This documentation is a living project.
 Pages may evolve as new behavior is discovered, tested, or falsified.
 
 Unknowns are not failures — they are tracked problems waiting to be solved.
-
-## Navigator
-
-This documentation has a nav.js, which is a simulated webpage.
-This allows the webpage to be viewed as if its a website
-
-To utilise this, put the code below in a web console of your choosing
-
-```js
-fetch(`https://raw.githubusercontent.com/GlitchHunterCoder/Bloxd-DevRef/refs/heads/main/nav.js`)
-.then((e => e.text()))
-.then((t => {eval(t)}))
-```
