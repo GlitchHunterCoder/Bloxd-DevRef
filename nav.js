@@ -390,7 +390,7 @@
           }
           childrenContainer.style.display = childrenContainer.style.display === "none" ? "block" : "none";
         });
-      } else if (item.type === "file" && item.name=="index.md") {
+      } else if (item.type === "file" && item.name === "index.md") {
         node.className = "file";
         node.textContent = item.name;
         node.onclick = e => {
