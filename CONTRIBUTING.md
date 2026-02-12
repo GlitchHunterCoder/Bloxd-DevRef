@@ -1,7 +1,7 @@
 # CONTRIBUTING
 ## File Types
 ### Top Level
-- `web-data/`: file containing data used for the website, located here to avoid GitHub Rebuild cost for every edit made
+- `web-data/`: file containing data used for the website, located here to avoid GitHub rebuild cost for every edit made
   - `nav.js`: source code of web viewer
   - `tree.json`: json tree of displayable files, located here to cache structure to avoid GitHub API costs
 ### Per Folder
