@@ -15,9 +15,9 @@ this is the contribution file, this is where contribution rules will be layed ou
   these tell editors
   - how they should structure the files
   - what is considered an allowed file
-  - what the index.md should look like for that file
+  - what the `index.md` should look like for that file
   
-  the format.md governs the files at the same depth as it, and all nested files within that directory
+  the `format.md` governs the files at the same depth as it, and all nested files within that directory
 
 - `index.md`:
 
