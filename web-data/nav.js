@@ -179,7 +179,7 @@
   }
 
   function resolveRelative(from, to) {
-    if (/^https?:\/\//.test(to)) return to; 
+    if (/^https?:\/\//.test(to)) return to;
     const base = from.split("/").slice(0, -1).join("/");
     let target = base ? `${base}/${to}` : to;
     return resolvePath(target);
@@ -265,22 +265,35 @@
 
     md = md.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
       const id = codeBlocks.length;
-      codeBlocks.push({ lang, code });
+      codeBlocks.push({
+        lang,
+        code
+      });
       return `@@CODEBLOCK_${id}@@`;
     });
 
-    md = md.replace(/\r\n/g, "\n");
+    md = md.replace(/@@CODEBLOCK_(\d+)@@/g, (_, i) => {
+      const {
+        lang,
+        code
+      } = codeBlocks[i];
+      return `<pre data-lang="${lang || ""}"><code>${escapeHTML(code)}</code></pre>`;
+    });
 
-    md = md.replace(/^### (.*)$/gm, "<h3>$1</h3>")
-           .replace(/^## (.*)$/gm, "<h2>$1</h2>")
-           .replace(/^# (.*)$/gm, "<h1>$1</h1>");
+    //new line
+    md = md.replace(/\r\n/g, "\n")
+      //headers
+      .replace(/^#### (.*)$/gm, "<h4>$1</h4>")
+      .replace(/^### (.*)$/gm, "<h3>$1</h3>")
+      .replace(/^## (.*)$/gm, "<h2>$1</h2>")
+      .replace(/^# (.*)$/gm, "<h1>$1</h1>")
 
-    md = md.replace(/`([^`]+)`/g, `<code class="inline">$1</code>`)
-           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-           .replace(/\*(.*?)\*/g, "<em>$1</em>")
-           .replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2">$1</a>`);
-
-    md = md.replace(/^\s*> (.*)$/gm, `<blockquote>$1</blockquote>`);
+      //formatting
+      .replace(/`([^`]+)`/g, `<code class="inline">$1</code>`)
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2">$1</a>`)
+      .replace(/^\s*> (.*)$/gm, `<blockquote>$1</blockquote>`);
 
     md = md.replace(/^\|(.+)\|\n\|([ -:|]+)\|\n((?:\|.*\|\n?)*)/gm, (_, headers, sep, rows) => {
       const ths = headers.split("|").map(h => `<th>${h.trim()}</th>`).join("");
@@ -296,36 +309,36 @@
       let html = "";
       let i = start;
       let listType = null;
-    
+
       while (i < lines.length) {
         const line = lines[i];
         const match = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)/);
         if (!match) break;
-    
+
         const [, space, bullet, text] = match;
         const level = Math.floor(space.replace(/\t/g, "  ").length / 2);
         if (level < indent) break;
-    
+
         const currentType = /\d+\./.test(bullet) ? "ol" : "ul";
         if (!listType) listType = currentType;
-    
+
         if (level > indent) {
           const inner = parseList(lines, i, level);
           html = html.replace(/<\/li>$/, "") + inner.html + "</li>";
           i = inner.next;
           continue;
         }
-    
+
         html += `<li>${text}</li>`;
         i++;
       }
-    
+
       return {
         html: listType ? `<${listType}>${html}</${listType}>` : "",
         next: i
       };
     }
-    
+
     const lines = md.split("\n");
     const finalLines = [];
     let idx = 0;
@@ -343,16 +356,11 @@
     md = finalLines.join("\n");
 
     md = md.split(/\n{2,}/)
-           .map(block => {
-             if (/^\s*<(h\d|ul|ol|li|pre|blockquote|table)/i.test(block)) return block;
-             return `<p>${block.trim()}</p>`;
-           })
-           .join("\n");
-
-    md = md.replace(/@@CODEBLOCK_(\d+)@@/g, (_, i) => {
-      const { lang, code } = codeBlocks[i];
-      return `<pre data-lang="${lang || ""}"><code>${escapeHTML(code)}</code></pre>`;
-    });
+      .map(block => {
+        if (/^\s*<(h\d|ul|ol|li|pre|blockquote|table)/i.test(block)) return block;
+        return `<p>${block.trim()}</p>`;
+      })
+      .join("\n");
 
     return md;
   }
@@ -416,4 +424,3 @@
   console.log("Opening index.md ...");
   openDoc("index");
 })();
-      
