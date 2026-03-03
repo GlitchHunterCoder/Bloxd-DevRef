@@ -216,8 +216,46 @@
       const raw = code.textContent;
       code.innerHTML = "";
 
-      const regex = /((?:\/\*[\s\S]*?\*\/)|(?:\/\/[^\n]*))|(["'`][\s\S]*?["'`])|(\b(?:const|let|var|function|return|if|else|for|while|class|new|await|async|throw|try|catch|switch|case|break|default)\b)|(\b(?:true|false|null|undefined)\b)|(\b\d+(\.\d+)?\b)|(\b[A-Za-z_]\w*\b)|([{}()\[\];.,:+\-*/%=<>!&|^~?])/g;
-
+      const regex = new RegExp(`(
+        (
+          ?:\\/\\*[
+            \\s\\S
+          ]*?\\*\\/
+        )|(
+          ?:\\/\\/[
+            ^\\n
+          ]*
+        )
+      )|(
+        [
+          "'\`
+        ][
+          \\s\\S
+        ]*?[
+          "'\`
+        ]
+      )|(
+        \\b(
+          ?:const|let|var|function|return|if|else|for|while|class|new|await|async|throw|try|catch|switch|case|break|default
+        )\\b
+      )|(
+        \\b(
+          ?:true|false|null|undefined
+        )\\b
+      )|(
+        \\b\\d+(
+          \\.\\d+
+        )?\\b
+      )|(
+        \\b[
+          A-Za-z_
+        ]\\w*\\b
+      )|(
+        [
+          {}()\\[\\];.,:+\\-*/%=<>!&|^~?
+        ]
+      )`.replace(/[ \n]/g,""),"g")
+      
       let lastIndex = 0;
       let match;
       while ((match = regex.exec(raw)) !== null) {
