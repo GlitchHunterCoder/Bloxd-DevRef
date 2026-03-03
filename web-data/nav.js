@@ -293,7 +293,8 @@
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
       .replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2">$1</a>`)
-      .replace(/^\s*> (.*)$/gm, `<blockquote>$1</blockquote>`);
+      .replace(/^\s*> (.*)$/gm, `<blockquote>$1</blockquote>`)
+      .replace(/^\s*---\s*$/gm,`<hr>`);
 
     md = md.replace(/^\|(.+)\|\n\|([ -:|]+)\|\n((?:\|.*\|\n?)*)/gm, (_, headers, sep, rows) => {
       const ths = headers.split("|").map(h => `<th>${h.trim()}</th>`).join("");
