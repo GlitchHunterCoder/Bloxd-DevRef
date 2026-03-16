@@ -5,7 +5,6 @@ this is the contribution file, this is where contribution rules will be layed ou
 ---
 - `web-data/`: file containing data used for the website, located here to avoid GitHub rebuild cost for every edit made as demonstrated [>Here<](https://github.com/GlitchHunterCoder/Bloxd-DevRef/deployments)
   - `nav.js`: source code of web viewer
-  - `tree.json`: json tree of displayable files, located here to cache structure to avoid GitHub API costs
 ---
 ### Per Folder
 ---
